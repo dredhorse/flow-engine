@@ -55,7 +55,7 @@ public class FlowPlayer implements Player {
     protected final String name;
     protected final PlayerNetwork network;
     protected volatile TransformProvider transformProvider = TransformProvider.NullTransformProvider.INSTANCE;
-    private volatile Map<String, List<InputSnapshot>> inputSnapshots = new HashMap<>();
+    private volatile Map<ThreadGroup, List<InputSnapshot>> inputSnapshots = new HashMap<>();
     private volatile Cache<FlowWorld, ConcurrentLinkedQueue<InputSnapshot>> liveInput = CacheBuilder.newBuilder()
             .concurrencyLevel(4)
             .weakKeys()
@@ -222,7 +222,7 @@ public class FlowPlayer implements Player {
     public void copyInput(FlowWorld world) {
         synchronized (inputMutex) {
             LinkedList<InputSnapshot> snapshot = new LinkedList<InputSnapshot>();
-            inputSnapshots.put(world.getName(), snapshot);
+            inputSnapshots.put(world.getThread().getThread().getThreadGroup(), snapshot);
             ConcurrentLinkedQueue<InputSnapshot> get = liveInput.getIfPresent(world);
             if (get == null) {
                 return;
@@ -238,11 +238,12 @@ public class FlowPlayer implements Player {
      */
     // TODO: I want to store this by thread id, but this is called by asyncmanagers
     @Override
-    public List<InputSnapshot> getInput(String world) {
-        List<InputSnapshot> get = inputSnapshots.get(world);
+    public List<InputSnapshot> getInput() {
+        ThreadGroup group = Thread.currentThread().getThreadGroup();
+        List<InputSnapshot> get = inputSnapshots.get(group);
         if (get == null) {
             get = Collections.EMPTY_LIST;
-            inputSnapshots.put(world, get);
+            inputSnapshots.put(group, get);
         }
         return get;
     }

@@ -144,5 +144,5 @@ public interface Player extends CommandSender {
 
     void setTransformProvider(TransformProvider provider);
 
-    public List<InputSnapshot> getInput(String world);
+    public List<InputSnapshot> getInput();
 }

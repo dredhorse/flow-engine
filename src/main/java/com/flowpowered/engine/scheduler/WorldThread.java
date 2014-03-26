@@ -96,7 +96,7 @@ public class WorldThread extends TickingElement {
         this.scheduler = scheduler;
         this.logger = scheduler.getEngine().getLogger();
         final int nThreads = Runtime.getRuntime().availableProcessors();
-        executorService = LoggingThreadPoolExecutor.newFixedThreadExecutorWithMarkedName(nThreads, "WorldThread - AsyncManager executor service", scheduler.getEngine().getLogger());
+        executorService = LoggingThreadPoolExecutor.newFixedThreadExecutorWithMarkedName(getGroup(), nThreads, "WorldThread - AsyncManager executor service", scheduler.getEngine().getLogger());
     }
 
     @Override

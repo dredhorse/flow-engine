@@ -49,7 +49,7 @@ public class PlayerControlledMovementComponent extends EntityComponent {
         final Vector3f up = getUp(getOwner().getPhysics().getRotation());
         final Vector3f forward = getForward(getOwner().getPhysics().getRotation());
         Vector3f translation = Vector3f.ZERO;
-        List<InputSnapshot> input = player.getInput(getOwner().getWorld().getName());
+        List<InputSnapshot> input = player.getInput();
         for (InputSnapshot snapshot : input) {
             if (!snapshot.isMouseGrabbed()) {
                 continue;
